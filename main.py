@@ -15,17 +15,17 @@ def main():
         message += agent
         message += str(tickets)
         if tickets > 14:
-            message += f' \U0001F4AA\n'
+            message += f'   \U0001F4AA\n'
         elif tickets > 9:
-            message += f' \U0001F44D\n'
+            message += f'   \U0001F44D\n'
         elif tickets > 4:
-            message += f' \U0001F90F\n'
+            message += f'   \U0001F90F\n'
         else:
-            message += f' \U0001F4A9\n'
+            message += f'   \U0001F4A9\n'
 
 
     print(message)
-    # telegram_api.send_message(message)
+    telegram_api.send_message(message)
 
 
 if __name__ == "__main__":
