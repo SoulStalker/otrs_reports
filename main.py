@@ -24,10 +24,13 @@ def main():
         else:
             message += f'   \U0001F4A9\n'
 
-    message += '\U0001F4A2' * 10
-    message += f'\nОткрытых заявок осталось: {analyzer.total_open[0][0]}\n'
-    message += f'Самая старая заявка {analyzer.total_open[0][1]}'
+    # message += '\U0001F4A2' * 10
+
     print(message)
+    telegram_api.send_message(message)
+
+    message = f'Открытых заявок осталось: {analyzer.total_open[0][0]}\n'
+    message += f'Самая старая заявка {analyzer.total_open[0][1]}'
     telegram_api.send_message(message)
 
 
