@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from sqlalchemy import Column, Integer, String, Date, func, select, text
+from sqlalchemy import Column, Integer, String, Date, func, select, text, cast
 
 from database import db
 from models import Ticket, User, Queue, State
@@ -9,6 +9,7 @@ class DataAnalyzer:
 
     def __init__(self):
         self.results = None
+        self.total_open = None
 
     def get_results(self):
         with db as session:
@@ -17,7 +18,7 @@ class DataAnalyzer:
                                          func.count(Ticket.tn).label('count')). \
                 join(Ticket, User.id == Ticket.change_by). \
                 filter(
-                Ticket.ticket_state_id.in_([2, 3]),
+                Ticket.ticket_state_id.in_([2]),
                 text("CAST(Ticket.change_time AS DATE) = CURRENT_DATE"),
                 Ticket.queue_id.in_([1, 4]),
                 Ticket.change_by.notin_([6, 12])
@@ -26,6 +27,15 @@ class DataAnalyzer:
                 order_by(text('count DESC')). \
                 limit(100). \
                 all()
+
+    def get_total_open_tickets(self):
+        with db as session:
+            self.total_open = session.query(func.count(Ticket.tn),
+                                            func.min(cast(Ticket.change_time, Date))). \
+                filter(
+                Ticket.ticket_state_id == 1,
+                Ticket.queue_id.in_([1, 4])
+            ).limit(500).all()
 
 
 def main():
@@ -36,6 +46,8 @@ def main():
     analyzer = DataAnalyzer()
     analyzer.get_results()
     print(*analyzer.results)
+    analyzer.get_total_open_tickets()
+    print(*analyzer.total_open)
 
 
 if __name__ == '__main__':

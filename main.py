@@ -6,6 +6,7 @@ from settings import token, chat_id
 def main():
     analyzer = DataAnalyzer()
     analyzer.get_results()
+    analyzer.get_total_open_tickets()
     telegram_api = TelegramBot(token=token, chat_id=chat_id)
 
     message = f'За сегодня закрыли заявки: \n'
@@ -23,7 +24,9 @@ def main():
         else:
             message += f'   \U0001F4A9\n'
 
-
+    message += '\U0001F4A2' * 10
+    message += f'\nОткрытых заявок осталось: {analyzer.total_open[0][0]}\n'
+    message += f'Самая старая заявка {analyzer.total_open[0][1]}'
     print(message)
     telegram_api.send_message(message)
 
