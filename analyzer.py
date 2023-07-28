@@ -10,7 +10,7 @@ class DataAnalyzer:
     def __init__(self):
         self.results = None
         self.total_open = None
-        self.month_results = None
+        # self.month_results = None
 
     def get_results(self):
         with db as session:
@@ -43,9 +43,9 @@ class DataAnalyzer:
             start_month = datetime(datetime.now().year, datetime.now().month, 1)
             end_month = datetime(datetime.now().year, datetime.now().month + 1, 1)
 
-            self.month_results = session.query(User.first_name,
-                                               User.last_name,
-                                               func.count(Ticket.tn).label('count')). \
+            self.results = session.query(User.first_name,
+                                         User.last_name,
+                                         func.count(Ticket.tn).label('count')). \
                 join(Ticket, User.id == Ticket.change_by). \
                 filter(
                 Ticket.ticket_state_id.in_([2]),
@@ -71,7 +71,7 @@ def main():
     analyzer.get_total_open_tickets()
     print(*analyzer.total_open)
     analyzer.get_month_results()
-    print(*analyzer.month_results)
+    print(*analyzer.results)
 
 
 if __name__ == '__main__':

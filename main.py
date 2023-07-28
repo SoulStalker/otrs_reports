@@ -5,26 +5,42 @@ from tg import TelegramBot
 from settings import token, chat_id
 
 
+def get_message(analyzer, period):
+    strong = f'   \U0001F4AA\n'
+    good = f'   \U0001F44D\n'
+    little = f'   \U0001F90F\n'
+    poo = f'   \U0001F4A9\n'
+    if period == 'сегодня':
+        multiplier = 1
+        analyzer.get_results()
+    elif period == 'месяц':
+        multiplier = 10
+        analyzer.get_month_results()
+    message = f'За {period} закрыли заявки: \n'
+    for result in analyzer.results:
+        agent = f'{result[0]} {result[1]} - '
+        tickets = result[2]
+        message += agent
+        message += str(tickets)
+        if tickets >= 15 * multiplier:
+            message += strong
+        elif tickets >= 10 * multiplier:
+            message += good
+        elif tickets >= 5 * multiplier:
+            message += little
+        else:
+            message += poo
+
+    return message
+
+
 def main():
     analyzer = DataAnalyzer()
     analyzer.get_results()
     analyzer.get_total_open_tickets()
     telegram_api = TelegramBot(token=token, chat_id=chat_id)
 
-    message = f'За сегодня закрыли заявки: \n'
-    for result in analyzer.results:
-        agent = f'{result[0]} {result[1]} - '
-        tickets = result[2]
-        message += agent
-        message += str(tickets)
-        if tickets > 14:
-            message += f'   \U0001F4AA\n'
-        elif tickets > 9:
-            message += f'   \U0001F44D\n'
-        elif tickets > 4:
-            message += f'   \U0001F90F\n'
-        else:
-            message += f'   \U0001F4A9\n'
+    message = get_message(analyzer, 'сегодня')
 
     print(message)
     telegram_api.send_message(message)
@@ -34,22 +50,8 @@ def main():
 
     telegram_api.send_message(message)
 
-    if datetime.datetime.today().weekday() == 6:
-        message = f'С начала месяца закрыли заявки: \n'
-        analyzer.get_month_results()
-        for month_result in analyzer.month_results:
-            agent = f'{month_result[0]} {month_result[1]} - '
-            tickets = month_result[2]
-            message += agent
-            message += str(tickets)
-            if tickets > 150:
-                message += f'   \U0001F4AA\n'
-            elif tickets > 100:
-                message += f'   \U0001F44D\n'
-            elif tickets > 50:
-                message += f'   \U0001F90F\n'
-            else:
-                message += f'   \U0001F4A9\n'
+    if datetime.datetime.today().weekday() == 4:
+        message = get_message(analyzer, 'месяц')
 
         print(message)
         telegram_api.send_message(message)
