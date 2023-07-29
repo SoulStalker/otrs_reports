@@ -50,7 +50,7 @@ def main():
 
     telegram_api.send_message(message)
 
-    if datetime.datetime.today().weekday() == 4:
+    if datetime.datetime.today().weekday() == 6:
         message = get_message(analyzer, 'месяц')
 
         print(message)
