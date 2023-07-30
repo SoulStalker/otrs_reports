@@ -56,7 +56,7 @@ class DataAnalyzer:
             ). \
                 group_by(User.first_name, User.last_name). \
                 order_by(text('count DESC')). \
-                limit(1000). \
+                limit(5000). \
                 all()
 
 
