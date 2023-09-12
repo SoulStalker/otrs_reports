@@ -8,6 +8,9 @@ class TelegramBot:
 
     def send_message(self, text):
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-        params = {"chat_id": self.chat_id, "text": text}
+        ftext = f'''
+        <code>{text}</code>
+        '''
+        params = {"chat_id": self.chat_id, "text": ftext, "parse_mode": "HTML"}
         response = requests.post(url, data=params)
         return response.json()
