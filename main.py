@@ -1,4 +1,5 @@
 import datetime
+import calendar
 
 from analyzer import DataAnalyzer
 from alcocheck import AlcoAnalyzer, beer_analyzer
@@ -58,14 +59,26 @@ def main():
 
     telegram_api.send_message(message)
 
+    # если сегодня воскресенье
     if datetime.datetime.today().weekday() == 6:
         message = get_message(analyzer, 'месяц')
 
         print(message)
         telegram_api.send_message(message)
 
+    # если сегодня последний день месяца
+    today = datetime.date.today()
+    is_last_day_of_month = today.day == calendar.monthrange(today.year, today.month)[1]
+    if is_last_day_of_month:
+        message = get_message(analyzer, 'месяц')
+
+        print(message)
+        telegram_api.send_message(message)
+
+    # дальше идет проверка алкоголя
     for k, v in contacts.items():
         if k == 'it_band':
+            # пропускаем группу техподдержка
             continue
         telegram_api = TelegramBot(token=token, chat_id=v)
         alco_analyzer = AlcoAnalyzer(alco_groups[0])
