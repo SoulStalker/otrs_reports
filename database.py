@@ -11,4 +11,8 @@ def create_session(db_url):
 
 
 dsn = settings.DSN
+dsn_set = settings.DSN_SET
 db, db_engine = create_session(dsn)
+db_set, set_engine = create_session(dsn_set)
+
+

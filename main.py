@@ -1,8 +1,9 @@
 import datetime
 
 from analyzer import DataAnalyzer
+from alcocheck import AlcoAnalyzer
 from tg import TelegramBot
-from settings import token, chat_id
+from settings import token, chat_id, alco_groups, contacts
 
 
 def get_message(analyzer, period):
@@ -34,15 +35,22 @@ def get_message(analyzer, period):
     return message
 
 
+def alco_message(product):
+    message = f'\U0001f943  У товара с кодом {product[0]}, {product[1]} крепость {product[2]}. Группа {product[3]}'
+    return message
+
+
 def main():
     analyzer = DataAnalyzer()
     analyzer.get_results()
     analyzer.get_total_open_tickets()
+
+    alco_analyzer = AlcoAnalyzer('13')
+
     telegram_api = TelegramBot(token=token, chat_id=chat_id)
 
     message = get_message(analyzer, 'сегодня')
 
-    print(message)
     telegram_api.send_message(message)
 
     message = f'Открытых заявок осталось: {analyzer.total_open[0][0]}\n'
@@ -55,6 +63,18 @@ def main():
 
         print(message)
         telegram_api.send_message(message)
+
+    for k, v in contacts.items():
+        if k == 'it_band':
+            continue
+        telegram_api = TelegramBot(token=token, chat_id=v)
+        alco_analyzer = AlcoAnalyzer(alco_groups[0])
+        alco_analyzer.get_final_results()
+        bad_news = alco_analyzer.results
+        if len(bad_news[0]) > 0:
+            # telegram_api.send_message(f'\U0001f6f0\uFE0F   Пщщ, пщщ... Хьюстон, у нас проблема')
+            for product in bad_news:
+                telegram_api.send_message(alco_message(product))
 
 
 if __name__ == "__main__":
