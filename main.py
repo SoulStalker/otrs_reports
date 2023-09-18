@@ -1,9 +1,9 @@
 import datetime
 
 from analyzer import DataAnalyzer
-from alcocheck import AlcoAnalyzer
+from alcocheck import AlcoAnalyzer, beer_analyzer
 from tg import TelegramBot
-from settings import token, chat_id, alco_groups, contacts
+from settings import token, chat_id, alco_groups, ba_group, contacts
 
 
 def get_message(analyzer, period):
@@ -36,7 +36,7 @@ def get_message(analyzer, period):
 
 
 def alco_message(product):
-    message = f'\U0001f943  У товара с кодом {product[0]}, {product[1]} крепость {product[2]}. Группа {product[3]}'
+    message = f'\U0001f943  У товара с кодом {product[0]} {product[1]} крепость {product[2]}. Группа {product[3]}'
     return message
 
 
@@ -75,6 +75,10 @@ def main():
             # telegram_api.send_message(f'\U0001f6f0\uFE0F   Пщщ, пщщ... Хьюстон, у нас проблема')
             for product in bad_news:
                 telegram_api.send_message(alco_message(product))
+        another_news = beer_analyzer(alco_groups[1], ba_group)
+        for beer in another_news:
+            # telegram_api.send_message(beer)
+            print(alco_message(beer))
 
 
 if __name__ == "__main__":

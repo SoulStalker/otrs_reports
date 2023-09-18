@@ -2,6 +2,7 @@ from sqlalchemy import and_
 
 from database import db_set
 from set_models import Products, Groups, Spirits
+from settings import ba_group, alco_groups
 
 
 class AlcoAnalyzer:
@@ -46,15 +47,29 @@ class AlcoAnalyzer:
         self.results = final_query
 
 
+def beer_analyzer(beer_code, zero_beer_code):
+    beer = AlcoAnalyzer(beer_code)
+    beer.get_final_results()
+    beer_results = set(beer.results)
+
+    zero_beer = AlcoAnalyzer(zero_beer_code)
+    zero_beer.get_final_results()
+    zero_results = set(zero_beer.results)
+
+    results = beer_results - zero_results
+    return results
+
+
 def main():
     """
     Запуск анализа для проверки. Основной запуск из main.py
     :return:
     """
-    analyzer = AlcoAnalyzer('20766')
-    analyzer.get_final_results()
-    for res in analyzer.results:
-        print(res)
+    # analyzer = AlcoAnalyzer('20766')
+    # analyzer.get_final_results()
+    # for res in analyzer.results:
+    #     print(res)
+    print(beer_analyzer(alco_groups[1], ba_group))
 
 
 if __name__ == '__main__':
