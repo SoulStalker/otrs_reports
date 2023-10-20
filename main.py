@@ -18,9 +18,9 @@ def get_message(analyzer, period):
     elif period == 'месяц':
         multiplier = 10
         analyzer.get_month_results()
-    message = f'За {period} закрыли заявки: \n'
+    message = f'За {period} закрыли заявки: \n\n'
     for result in analyzer.results:
-        agent = f'{result[0]} {result[1]} - '
+        agent = f' - {result[0]} {result[1]} - '
         tickets = result[2]
         message += agent
         message += str(tickets)
@@ -54,7 +54,7 @@ def main():
 
     telegram_api.send_message(message)
 
-    message = f'Открытых заявок осталось: {analyzer.total_open[0][0]}\n'
+    message = f'Открытых заявок осталось: {analyzer.total_open[0][0]}\n\n'
     message += f'Самая старая заявка {analyzer.total_open[0][1]}'
 
     telegram_api.send_message(message)
@@ -84,15 +84,17 @@ def main():
         alco_analyzer = AlcoAnalyzer(alco_groups[0])
         alco_analyzer.get_final_results()
         bad_news = alco_analyzer.results
-        if len(bad_news[0]) > 0:
-            # telegram_api.send_message(f'\U0001f6f0\uFE0F   Пщщ, пщщ... Хьюстон, у нас проблема')
-            for product in bad_news:
-                telegram_api.send_message(alco_message(product))
-        another_news = beer_analyzer(alco_groups[1], ba_group)
-        for beer in another_news:
-            # telegram_api.send_message(beer)
-            print(alco_message(beer))
-
+        try:
+            if len(bad_news[0]) > 0:
+                # telegram_api.send_message(f'\U0001f6f0\uFE0F   Пщщ, пщщ... Хьюстон, у нас проблема')
+                for product in bad_news:
+                    telegram_api.send_message(alco_message(product))
+            another_news = beer_analyzer(alco_groups[1], ba_group)
+            for beer in another_news:
+                # telegram_api.send_message(beer)
+                print(alco_message(beer))
+        except Exception as err:
+            print(err)
 
 if __name__ == "__main__":
     main()

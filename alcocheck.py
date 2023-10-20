@@ -65,11 +65,11 @@ def main():
     Запуск анализа для проверки. Основной запуск из main.py
     :return:
     """
-    # analyzer = AlcoAnalyzer('20766')
-    # analyzer.get_final_results()
-    # for res in analyzer.results:
-    #     print(res)
-    print(beer_analyzer(alco_groups[1], ba_group))
+    analyzer = AlcoAnalyzer('13')
+    analyzer.get_final_results()
+    for res in analyzer.results:
+        print(res)
+    # print(beer_analyzer(alco_groups[1], ba_group))
 
 
 if __name__ == '__main__':
