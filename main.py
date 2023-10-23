@@ -44,10 +44,14 @@ def get_message(analyzer, period):
         else:
             message += poo
             poos.setdefault(result[0], result[2])
-    hero = min(poos.items(), key=lambda x: x[1])
-    print(hero)
-    end_word = bad_work(hero[0])
-
+    if len(poos) > 0:
+        hero = min(poos.items(), key=lambda x: x[1])
+        end_word = bad_work(hero[0])
+    else:
+        end_word = 'Надо же как отработали, ни одной какахи'
+    if len(strongs) > 0:
+        super_hero = max(strongs, key=lambda x: x[1])
+        end_word = well_done(super_hero)
     return message, end_word
 
 
